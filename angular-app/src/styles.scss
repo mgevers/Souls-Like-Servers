@@ -1,0 +1,120 @@
+@use '@angular/material' as mat;
+
+@import '@blueprintui/layout/index.min.css';
+
+$light-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$blue-palette,
+    tertiary: mat.$azure-palette,
+  )
+));
+
+$dark-theme: mat.define-theme((
+  color: (
+    theme-type: dark,
+    primary: mat.$blue-palette,
+    tertiary: mat.$azure-palette,
+  )
+));
+
+:root {
+  color-scheme: light dark;
+  
+  @include mat.all-component-typographies($light-theme);
+  @include mat.all-component-densities($light-theme);
+  @include mat.all-component-colors($light-theme);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    @include mat.all-component-colors($dark-theme);
+    @include mat.dialog-overrides((
+      container-max-width: 80vw
+    ));
+  }
+}
+
+[data-theme="dark"] {
+  @include mat.all-component-colors($dark-theme);
+  background-color: mat.get-theme-color($dark-theme, surface);
+  color: mat.get-theme-color($dark-theme, on-surface);
+}
+
+[data-theme="light"] {
+  @include mat.all-component-colors($light-theme);
+  background-color: mat.get-theme-color($light-theme, surface);
+  color: mat.get-theme-color($light-theme, on-surface);
+}
+
+html {
+  color-scheme: light dark;
+}
+
+html,
+body {
+  height: 100%;
+}
+body { 
+  margin: 0; 
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.mat-elevation-z0  { box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1) ;}
+.mat-elevation-z1  { box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); }
+.mat-elevation-z2  { box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3); }
+.mat-elevation-z3  { box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.4); }
+.mat-elevation-z4  { box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5); }
+.mat-elevation-z5  { box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.6); }
+
+.mirror{
+  display: inline-block; 
+  font-size: 30px;
+
+  -webkit-transform: matrix(-1, 0, 0, 1, 0, 0);
+  -moz-transform: matrix(-1, 0, 0, 1, 0, 0);
+  -o-transform: matrix(-1, 0, 0, 1, 0, 0);
+  transform: matrix(-1, 0, 0, 1, 0, 0);
+}
+
+.success-snackbar {
+  .mdc-snackbar__surface {
+    background-color: green !important;
+  }
+
+  .mdc-snackbar__label {
+    color: black !important; 
+  }
+
+  .mdc-snackbar__action {
+    color: black !important;
+  }
+}
+
+.warning-snackbar {
+  .mdc-snackbar__surface {
+    background-color: orange !important;
+  }
+
+  .mdc-snackbar__label {
+    color: black !important;
+  }
+
+  .mdc-snackbar__action {
+    color: black !important;
+  }
+}
+
+.failure-snackbar {
+  .mdc-snackbar__surface {
+    background-color: red !important;
+  }
+
+  .mdc-snackbar__label {
+    color: black !important;
+  }
+
+  .mdc-snackbar__action {
+    color: black !important;
+  }
+}

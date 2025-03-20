@@ -1,0 +1,24 @@
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src
+COPY ["Presentation/src/PresentationAPI/PresentationAPI.csproj", "Presentation/src/PresentationAPI/"]
+RUN dotnet restore "./Presentation/src/PresentationAPI/PresentationAPI.csproj"
+COPY . .
+WORKDIR "/src/Presentation/src/PresentationAPI"
+RUN dotnet build "./PresentationAPI.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
+FROM build AS publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "./PresentationAPI.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+USER $APP_UID
+ENTRYPOINT ["dotnet", "PresentationAPI.dll"]

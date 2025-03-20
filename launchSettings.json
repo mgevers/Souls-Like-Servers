@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "Docker Compose": {
+      "commandName": "DockerCompose",
+      "commandVersion": "1.0",
+      "serviceActions": {
+        "presentationapi": "StartDebugging",
+        "monsters.application.messageprocessor": "StartDebugging",
+        "presentation.application.api": "StartDebugging",
+        "presentation.application.messageprocessor": "StartDebugging"
+      }
+    }
+  }
+}

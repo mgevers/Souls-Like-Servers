@@ -1,0 +1,18 @@
+services:
+  
+  presentation.application.api:
+    environment:
+      - DOTNET_ENVIRONMENT=Development
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+  monsters.application.messageprocessor:
+    environment:
+      - DOTNET_ENVIRONMENT=Development
+
+  presentation.application.messageprocessor:
+    environment:
+      - DOTNET_ENVIRONMENT=Development

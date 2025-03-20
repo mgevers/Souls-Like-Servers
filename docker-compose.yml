@@ -1,0 +1,96 @@
+services:
+
+  sql-server:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sql-server
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=y
+      - SA_PASSWORD=Password123!!
+    volumes:
+      - ./sqlserver/data:/var/opt/mssql/data
+      - ./sqlserver/log:/var/opt/mssql/log
+
+  elasticsearch:
+    image: elasticsearch:8.17.2
+    container_name: elasticsearch
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    volumes:
+      - ./esdata:/usr/share/elasticsearch/data
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: masstransit/rabbitmq
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: "guest"
+      RABBITMQ_DEFAULT_PASS: "guest"
+
+  aspire-dashboard:
+    image: mcr.microsoft.com/dotnet/nightly/aspire-dashboard:8.0.0-preview.6
+    container_name: aspire-dashboard
+    ports:
+      - 18888:18888
+      - 4317:18889
+    environment:
+       - CircuitOptions__DetailedErrors=true
+       - DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS=true 
+
+  seq:
+    image: datalust/seq:latest
+    container_name: seq
+    environment:
+      - ACCEPT_EULA=Y
+    ports:
+      - 5341:5341
+      - 8088:80
+
+  presentation.application.api:
+    image: ${DOCKER_REGISTRY-}presentationapplicationapi
+    container_name: presentation.application.api
+    build:
+      context: .
+      dockerfile: Presentation/src/Presentation.Application.API/Dockerfile
+    depends_on:
+        - elasticsearch
+    ports:
+      - "5001:5001"
+    environment:
+      ASPNETCORE_URLS: http://+:5001
+
+  presentation.application.messageprocessor:
+    image: ${DOCKER_REGISTRY-}presentationapplicationmessageprocessor
+    container_name: presentation.application.messageprocessor
+    build:
+      context: .
+      dockerfile: Presentation/src/Presentation.Application.MessageProcessor/Dockerfile
+    depends_on:
+        - elasticsearch
+    environment:
+      OTEL_TRACES_SAMPLER: "always_on"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://aspire-dashboard:18889"
+      OTEL_SERVICE_NAME: "presentation-message-processor"
+
+  monsters.application.messageprocessor:
+    image: ${DOCKER_REGISTRY-}monstersapplicationmessageprocessor
+    container_name: monsters.application.messageprocessor
+    build:
+      context: .
+      dockerfile: Monsters/src/Monsters.Application.MessageProcessor/Dockerfile
+    depends_on:
+        - sql-server
+    environment:
+      OTEL_TRACES_SAMPLER: "always_on"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://aspire-dashboard:18889"
+      OTEL_SERVICE_NAME: "monsters-message-processor"
