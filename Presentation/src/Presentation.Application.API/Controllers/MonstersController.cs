@@ -2,7 +2,6 @@
 using Ardalis.Result.AspNetCore;
 using MassTransit;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Monsters.Core.Commands.Monsters;

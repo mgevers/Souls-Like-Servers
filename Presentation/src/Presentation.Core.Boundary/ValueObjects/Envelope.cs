@@ -1,6 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace Presentation.Core.Boundary.ValueObjects
 {

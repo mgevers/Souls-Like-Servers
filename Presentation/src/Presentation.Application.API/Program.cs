@@ -8,7 +8,6 @@ using Presentation.Application.API.EventHandlers.Monsters;
 using Presentation.Application.API.Hubs;
 using Presentation.Persistence.Elasticsearch;
 using Presentation.Persistence.Elasticsearch.Options;
-using System.Text.Json;
 
 namespace Presentation.Application.API
 {
